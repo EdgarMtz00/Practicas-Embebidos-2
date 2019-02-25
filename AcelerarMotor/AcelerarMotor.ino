@@ -15,18 +15,42 @@ const int pinDir = 5;
 const int pinDown = 6;
 const int pinUp = 7;
 const int mtrFrec = 2200/60;
-int cambioVel, Tmax, vel;
+int Tmax, vel;
+bool dir = 1;
 
 
 void setup(){
-	pinMode(pinCtrl, OUTPUT);
-	Tmax = (1 / (mtrFrec * 2))/;
+	pinMode(pinVel, OUTPUT);
+	Tmax = (1 / (mtrFrec * 2));
+	//TODO: cambiar frecuencia del pwm
+	vel = 50;
+	analogWrite(pinVel, vel);
+	cambiarDireccion();
 }
 
-void acelerar(){
-	
+//TODO: escribir en la pantalla
+void acelerar(int cambio){
+	vel += cambio;
+	analogWrite(pinVel, vel);
+}
+
+void cambiarDireccion(){
+	dir != dir;
+	if(dir){
+		digitalWrite(pinIzq, HIGH);
+		digitalWrite(pinDer, LOW);
+	}else{
+		digitalWrite(pinIzq, LOW);
+		digitalWrite(pinDer, HIGH);
+	}
 }
 
 void loop(){
-
+	if(digitalRead(pinUp)){
+		acelerar(10);
+	}else if(digitalRead(pinDown)){
+		acelerar(-10);
+	}else if(digitalRead(pinDir)){
+		cambiarDireccion();	
+	}
 }
