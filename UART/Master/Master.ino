@@ -3,6 +3,7 @@
 #include <IRremote.h>
 #include <IRremoteInt.h>
 #include <ir_Lego_PF_BitStreamEncoder.h>
+#include <Keypad.h>
 
 #define RS 13
 #define EN 12
@@ -10,14 +11,29 @@
 #define D5 10
 #define D6 9
 #define D7 8
-#define Rec 13
+#define Rec 7
+
+const byte filas = 4;
+const byte columnas = 4;
+const int pin = 9;
+byte pinsFilas[filas]={0,1,2,3};
+byte pinsColumnas[columnas]={4,5,6,7};
+char teclas[filas][columnas]={
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+
+Keypad teclado=Keypad(makeKeymap(teclas),pinsFilas,pinsColumnas,filas,columnas);
 
 LiquidCrystal lcd(RS,EN,D4,D5,D6,D7);
-IRrecv receptor(Rec);
-decode_results resultados;
+//IRrecv receptor(Rec);
+//decode_results resultados;
 
 String msg = "";
 char charMsg[10];
+char Key = NO_KEY;
 
 void printMenu(){
   lcd.clear();
@@ -100,17 +116,24 @@ void setup(){
 }
 
 void loop(){
-	if(receptor.decode(&resultados)){
-    switch (resultados.value){
-      case 0xFF6897:              
+  while(tecla == NO_KEY){
+    tecla = teclado.getKey();
+  }
+	//if(receptor.decode(&resultados)){
+    //switch (resultados.value){
+    switch (tecla){
+      //case 0xFF6897:              
+      case '1':
         Serial.write("blinkLed");
         break;
         
-      case 0xFF30CF:
+      //case 0xFF30CF:
+      case '2':
         Serial.write("showMssg");
         break;
         
-      case 0xFF18E7:
+      //case 0xFF18E7:
+      case '3':
         lcd.clear();
         lcd.print("write:");
         lcd.setCursor(0,1);
@@ -120,7 +143,8 @@ void loop(){
         printMenu();
         break;
         
-      case 0xFF10EF:
+      //case 0xFF10EF:
+      case '4':
         Serial.write("testConn");
         int TimeOut = 0;
         while(Serial.available() <= 0 || TimeOut <= 50){
@@ -150,7 +174,5 @@ void loop(){
         printMenu();
         break;
     }
-    receptor.resume();
-  }
   delay(500);
 }
