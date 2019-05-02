@@ -1,4 +1,5 @@
-#include <LiquidCrystal.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 #include <boarddefs.h>
 #include <IRremote.h>
 #include <IRremoteInt.h>
@@ -16,8 +17,8 @@
 const byte filas = 4;
 const byte columnas = 4;
 const int pin = 9;
-byte pinsFilas[filas]={0,1,2,3};
-byte pinsColumnas[columnas]={4,5,6,7};
+byte pinsFilas[filas]={2,3,4,5};
+byte pinsColumnas[columnas]={6,7,8,9};
 char teclas[filas][columnas]={
   {'1','2','3','A'},
   {'4','5','6','B'},
@@ -27,13 +28,13 @@ char teclas[filas][columnas]={
 
 Keypad teclado=Keypad(makeKeymap(teclas),pinsFilas,pinsColumnas,filas,columnas);
 
-LiquidCrystal lcd(RS,EN,D4,D5,D6,D7);
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 //IRrecv receptor(Rec);
 //decode_results resultados;
 
 String msg = "";
 char charMsg[10];
-char Key = NO_KEY;
+char tecla = NO_KEY;
 
 void printMenu(){
   lcd.clear();
@@ -41,7 +42,7 @@ void printMenu(){
   lcd.setCursor(0, 1);
   lcd.print("3.-SendMsg 4.-Test");
 }
-
+/*
 void getText(){
   receptor.resume();
   int i = 0;
@@ -107,11 +108,14 @@ void getText(){
     delay(500);
   }
 }
- 
+ */
 void setup(){
+  lcd.init();
+  lcd.backlight();
   Serial.begin(9600);
-  receptor.enableIRIn();
-  lcd.begin(16, 2);
+  //receptor.enableIRIn();
+  lcd.clear();
+  lcd.print("hola");
   printMenu();
 }
 
@@ -124,7 +128,7 @@ void loop(){
     switch (tecla){
       //case 0xFF6897:              
       case '1':
-        Serial.write("blinkLed");
+        Serial.write("b");
         break;
         
       //case 0xFF30CF:
@@ -137,15 +141,15 @@ void loop(){
         lcd.clear();
         lcd.print("write:");
         lcd.setCursor(0,1);
-        getText();
-        Serial.write("getsMssg");   
-        Serial.print(msg);
+        //getText();
+        Serial.println("getsMssg");   
+        Serial.println(msg);
         printMenu();
         break;
         
       //case 0xFF10EF:
       case '4':
-        Serial.write("testConn");
+        Serial.println("testConn");
         int TimeOut = 0;
         while(Serial.available() <= 0 || TimeOut <= 50){
           delay(100);
@@ -174,5 +178,6 @@ void loop(){
         printMenu();
         break;
     }
+    tecla = NO_KEY;
   delay(500);
 }

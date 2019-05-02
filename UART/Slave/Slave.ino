@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h>
+# include <LiquidCrystal.h>
 
 #define RS 13
 #define EN 12
@@ -56,4 +56,3 @@ void loop(){
   }
   delay(30);
 }
-
