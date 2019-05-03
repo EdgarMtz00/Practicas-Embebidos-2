@@ -17,6 +17,7 @@
 const byte filas = 4;
 const byte columnas = 4;
 const int pin = 9;
+const int slaves = 2;
 byte pinsFilas[filas]={2,3,4,5};
 byte pinsColumnas[columnas]={6,7,8,9};
 char teclas[filas][columnas]={
@@ -29,12 +30,11 @@ char teclas[filas][columnas]={
 Keypad teclado=Keypad(makeKeymap(teclas),pinsFilas,pinsColumnas,filas,columnas);
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
-//IRrecv receptor(Rec);
-//decode_results resultados;
 
 String msg = "";
 char charMsg[10];
 char tecla = NO_KEY;
+char slaveId;
 
 void printMenu(){
   lcd.clear();
@@ -42,78 +42,40 @@ void printMenu(){
   lcd.setCursor(0, 1);
   lcd.print("3.-SendMsg 4.-Test");
 }
-/*
-void getText(){
-  receptor.resume();
-  int i = 0;
-  bool pwr = true;
-  while(pwr || i < 10){
-    if(receptor.decode(&resultados)){
-      switch(resultados.value){
-        case 0xFF6897:
-          msg += '0';
-          lcd.print('0');
-          i++;
-          break;
-        case 0xFF30CF:
-          msg += '1';
-          lcd.print('1');
-          i++;
-          break;
-        case 0xFF18E7:
-          msg += '2';
-          lcd.print('2');
-          i++;
-          break;
-        case 0xFF7A85:
-          msg += '3';
-          lcd.print('3');
-          i++;
-          break;
-        case 0xFF10EF:
-          msg += '4';
-          lcd.print('4');
-          i++;
-          break;
-        case 0xFF38C7:
-          msg += '5';
-          lcd.print('5');
-          i++;
-          break;
-        case 0xFF5AA5:
-          msg += '6';
-          lcd.print('6');
-          i++;
-          break;
-        case 0xFF42BD:
-          msg += '7';
-          lcd.print('7');
-          i++;
-          break;
-        case 0xFF4AB5:
-          msg += '8';
-          lcd.print('8');
-          i++;
-          break;
-        case 0xFF52AD:
-          msg += '9';
-          lcd.print('9');
-          i++;
-          break;
-        case 0xFFA25D:
-          pwr = false;
-      }
+
+void getId(){
+  lcd.clear();
+  lcd.print("No. esclavo");
+  tecla = NO_KEY;
+   while(tecla == NO_KEY){
+    tecla = teclado.getKey();
+    if(tecla != NO_KEY){
+      slaveId = tecla;
+      lcd.setCursor(0,1);
+      lcd.print(tecla);
+      printMenu();
+      return;
     }
-    receptor.resume();
-    delay(500);
   }
 }
- */
+
+void getText(){
+  lcd.clear();
+  tecla = NO_KEY;
+  while(tecla != '*'){
+    tecla = teclado.getKey();
+    if(tecla != NO_KEY){
+      msg += tecla;
+      Serial.print(tecla);
+      lcd.print(tecla);
+    }
+  }
+}
+ 
 void setup(){
+  Serial.begin(9600);
   lcd.init();
   lcd.backlight();
-  Serial.begin(9600);
-  //receptor.enableIRIn();
   lcd.clear();
   lcd.print("hola");
   printMenu();
@@ -123,60 +85,65 @@ void loop(){
   while(tecla == NO_KEY){
     tecla = teclado.getKey();
   }
-	//if(receptor.decode(&resultados)){
-    //switch (resultados.value){
+    lcd.setCursor(0,2);
+    lcd.print(tecla);
     switch (tecla){
-      //case 0xFF6897:              
       case '1':
-        Serial.write("b");
+        getId();
+        Serial.print("blinkLed");
+        Serial.print(slaveId);
         break;
-        
-      //case 0xFF30CF:
       case '2':
+        getId();
         Serial.write("showMssg");
+        Serial.print(slaveId);
         break;
-        
-      //case 0xFF18E7:
       case '3':
-        lcd.clear();
-        lcd.print("write:");
-        lcd.setCursor(0,1);
-        //getText();
-        Serial.println("getsMssg");   
-        Serial.println(msg);
+        getId();
+        Serial.write("getsMssg");
+        Serial.print(slaveId);
+        getText();
+        delay(1500);
         printMenu();
+        msg="";
         break;
-        
-      //case 0xFF10EF:
       case '4':
-        Serial.println("testConn");
+        getId();
+        Serial.write("testConn");
+        Serial.print(slaveId);
         int TimeOut = 0;
-        while(Serial.available() <= 0 || TimeOut <= 50){
+        while(Serial.available() == 0 && TimeOut <= 70){
           delay(100);
           TimeOut++;
+          lcd.setCursor(0,3);
+          lcd.print(Serial.available());
+          lcd.setCursor(0,2);
+          lcd.print(TimeOut);
         }
-        if(TimeOut < 50){
-          Serial.readBytes(charMsg, 2);
-          if(charMsg == "OK"){
+        if(TimeOut < 70){
+          String strMsg = Serial.readString();
+          if(strMsg == "OK"){
             lcd.clear();
             lcd.print("Succesful");
-            lcd.setCursor(1,0);
-            lcd.print("Connection");
+            lcd.setCursor(0,1);
+            lcd.print("Connection ");
           }else{
             lcd.clear();
             lcd.print("Wrong");
-            lcd.setCursor(1,0);
+            lcd.setCursor(0,1);
             lcd.print("Connection");
           }
+          strMsg="";
         }else{
           lcd.clear();
           lcd.print("Failed");
-          lcd.setCursor(1,0);
+          lcd.setCursor(0,1);
           lcd.print("Connection");
         }
-        delay(1250);
+        delay(1750);
         printMenu();
         break;
+        
     }
     tecla = NO_KEY;
   delay(500);

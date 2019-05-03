@@ -1,4 +1,5 @@
 {
     "board": "arduino:avr:uno",
-    "sketch": "ContadorDeRevoluciones\\ContadorDeRevoluciones.ino"
+    "sketch": "ContadorDeRevoluciones\\ContadorDeRevoluciones.ino",
+    "port": "COM3"
 }
