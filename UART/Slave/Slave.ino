@@ -40,7 +40,8 @@ void loop(){
     }else if (strMsg == "getsMssg2"){
         lcd.clear();
         lcd.print("Recibiendo mensaje");
-        int timeOut = 0;
+        int timeOut 
+        = 0;
         while(Serial.available() == 0 && timeOut <= 50){
           delay(100);
           timeOut++;
@@ -49,10 +50,13 @@ void loop(){
         }
         lcd.clear();
         if(timeOut < 50){
-          char c[];
-          while(Serial.available() > 0 && c != '*'){
-            Serial.readBytes(c);
-            lcd.print(c);
+          char c;
+          while(Serial.available() > 0 || c != '*'){
+            c = Serial.read();
+            if (isdigit(c) || isalpha(c)){
+              delay(500);
+              lcd.print(c);
+            }
           }
         }else{
           lcd.print("error");
