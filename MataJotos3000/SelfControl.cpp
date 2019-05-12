@@ -1,0 +1,5 @@
+class SelfControl(){
+    void run(){
+
+    }
+}
