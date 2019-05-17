@@ -1,5 +1,4 @@
 # include <LiquidCrystal.h>
-
 #define RS 13
 #define EN 12
 #define D4 11
@@ -12,7 +11,6 @@ LiquidCrystal lcd(RS,EN,D4,D5,D6,D7);
 static String recordMsg = "MENSAJE"; 
 bool ledFade = false;
 int fadeValue = 0;
-char msg[10] = "";
 
 void setup(){
   Serial.begin(9600);
@@ -26,8 +24,7 @@ void loop(){
     fadeValue = (fadeValue + 2) % 255;
     lcd.setCursor(0,1);
     lcd.print(fadeValue);
-  }
-  
+  }  
   if(Serial.available()>0){
     delay(100); 
     String strMsg = Serial.readString();
@@ -40,7 +37,8 @@ void loop(){
     }else if (strMsg == "getsMssg2"){
         lcd.clear();
         lcd.print("Recibiendo mensaje");
-        int timeOut = 0;
+        int timeOut 
+        = 0;
         while(Serial.available() == 0 && timeOut <= 50){
           delay(100);
           timeOut++;
@@ -49,10 +47,13 @@ void loop(){
         }
         lcd.clear();
         if(timeOut < 50){
-          char c[];
-          while(Serial.available() > 0 && c != '*'){
+          char c;
+          while(Serial.available() > 0 || c != '*'){
             c = Serial.read();
-            lcd.print(c);
+            if (isdigit(c) || isalpha(c)){
+              delay(500);
+              lcd.print(c);
+            }
           }
         }else{
           lcd.print("error");
