@@ -70,6 +70,7 @@ void getText(){
       lcd.print(tecla);
     }
   }
+  lcd.print(tecla);
 }
  
 void setup(){

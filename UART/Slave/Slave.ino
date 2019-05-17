@@ -51,7 +51,7 @@ void loop(){
         if(timeOut < 50){
           char c[];
           while(Serial.available() > 0 && c != '*'){
-            Serial.readBytes(c);
+            c = Serial.read();
             lcd.print(c);
           }
         }else{
