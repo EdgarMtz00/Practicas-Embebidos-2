@@ -1,5 +1,5 @@
-class SelfControl(){
+class SelfControl{
     void run(){
 
     }
-}
+};

@@ -1,15 +1,19 @@
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+#endif
+         
 class BTControl{
+  public: 
     BTControl(){
-        Serial.begin(9600);
-        Movement moves = new Movement();   
+        Serial.begin(9600); 
     }
 
-    void run(){
-        while(true){
-            if(Serial.available() > 0){
-                String command = Serial.readString();
-                moves.move(command);
-            }
-        }
+    char getCommand(){
+      if(Serial.available() > 0){
+        char Read = Serial.read();
+        return Read;
+      }
     }
-}
+};

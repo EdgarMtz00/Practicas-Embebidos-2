@@ -1,4 +1,4 @@
-enum Directions{
+enum Direction{
     Front,
     Back,
     Left,
@@ -7,4 +7,4 @@ enum Directions{
     FullRight,
     BackLeft,
     BackRight
-}
+};

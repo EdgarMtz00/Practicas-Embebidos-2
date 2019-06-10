@@ -1,18 +1,35 @@
-class Movement{
-    int pins[4] = {2, 3, 4, 5, 6, 7, 8, 9};
-    int speed;
-    int speedPin = 6;
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+#else
+  #include "WProgram.h"
+#endif
+#include "Directions.h"
 
-    public void move(Directions dir){
+
+
+class Movement{
+    int pins[8] = {2, 3, 4, 5, 6, 7, 8, 9};
+   /*
+    * 2, 3 izquierda delantera
+    * 4, 5 derecha delantera
+    * 6, 7 izquierda trasera
+    * 8, 9 derecha trasera
+    */
+    int speed;
+    int speedPin = 10;
+
+    public:
+    void move(char d){
+      Direction dir = getDirection(d);
         switch (dir){
             case Front:
-                for(int i = 0; i < pins.length(); i+=2){
+                for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
                     digitalWrite(pins[i], HIGH);
                     digitalWrite(pins[i+1], LOW);
                 }
                 break;
             case Back:
-                for(int i = 0; i < pins.length(); i+=2){
+                for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
                     digitalWrite(pins[i], LOW);
                     digitalWrite(pins[i+1], HIGH);
                 }
@@ -37,7 +54,7 @@ class Movement{
                 digitalWrite(pins[6], HIGH);
                 digitalWrite(pins[7], LOW);
                 break;
-            case FullLeft
+            case FullLeft:
                 digitalWrite(pins[0], HIGH);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], LOW);
@@ -82,18 +99,37 @@ class Movement{
         }
     }
 
+    Direction getDirection(char s){
+      if(s == "F"){//FrontR
+          return Direction::Front;
+      }else if(s == "B"){//Back
+          return Direction::Back;
+      }else if(s == "l"){//left
+          return Direction::Left;
+      }else if(s == "r"){//right
+          return Direction::Right;
+      }else if(s == "L"){//FullLeft 
+          return Direction::FullLeft;
+      }else if(s ==  "R"){//FullRight
+          return Direction::FullRight;
+      }else if(s ==  "i"){ //BackLeft
+          return Direction::BackLeft;
+      }else if(s == "d"){//BackRight
+          return Direction::BackRight;
+      }
+    }
+    
     void setSpeed(int speed){
         speed = speed % 255;
         analogWrite(speedPin, speed);
     }
 
-    Movement(){
-        for(int i = 0; i < pins.length; i++){
+    void entrada(){
+        for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i++){
             pinMode(pins[i], OUTPUT);
-            digitalWrite(pins[i], HIGH);
         }
-        speed = 100;
-        analogWrite(speedPin, speed);
+        Serial.print("entrada");
+        setSpeed(254);
         move(BackLeft);
         delay(1000);
         move(Left);
@@ -103,4 +139,4 @@ class Movement{
         move(Right);
         delay(3000);
     }
-}
+};
