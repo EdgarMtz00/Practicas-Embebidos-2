@@ -3,8 +3,8 @@
 MPU6050 sensor;
 
 String lastDir;
-String frontDir[5] = {"FullLeft", "Left", "Front", "Right", "FullRight"};
-String backDir[5] = {"BackLeft", "BackLeft", "Back", "BackRight", "BackRight"};
+String frontDir[5] = {"L", "l", "F", "r", "R"};
+String backDir[5] = {"i", "i", "B", "d", "d"};
 
 int16_t ax, ay, az;
 int16_t minAx = -15000;
@@ -15,6 +15,8 @@ String getDirection() {
   int i = 0;
   for (float offset = 0; offset <= 2; offset += .5) {
     if (ax <= minAx + (offset * maxAx )) {
+      Serial.println(ax);
+      Serial.print(i);
       if (az >= 0) {
         lastDir = frontDir[i];
       } else {
