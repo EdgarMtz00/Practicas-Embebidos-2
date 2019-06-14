@@ -6,5 +6,6 @@ enum Direction{
     FullLeft,
     FullRight,
     BackLeft,
-    BackRight
+    BackRight,
+    NONE
 };

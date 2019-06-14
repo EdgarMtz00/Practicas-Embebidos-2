@@ -11,9 +11,11 @@ class BTControl{
     }
 
     char getCommand(){
-      if(Serial.available() > 0){
+      if(Serial.available()){
         char Read = Serial.read();
         return Read;
+      }else{
+        return '0';
       }
     }
 };

@@ -20,21 +20,27 @@ class Movement{
 
     public:
     void move(char d){
+      if (d == '0' || d == ' ')
+        return;
       Direction dir = getDirection(d);
+      Serial.print(d);
         switch (dir){
             case Front:
+                Serial.println("Front");
                 for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
                     digitalWrite(pins[i], HIGH);
                     digitalWrite(pins[i+1], LOW);
                 }
                 break;
             case Back:
+                Serial.println("Back");
                 for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
                     digitalWrite(pins[i], LOW);
                     digitalWrite(pins[i+1], HIGH);
                 }
                 break;
             case Left:
+                Serial.println("Left");
                 digitalWrite(pins[0], HIGH);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], LOW);
@@ -45,6 +51,7 @@ class Movement{
                 digitalWrite(pins[7], LOW);
                 break;
             case Right:
+                Serial.println("Right");
                 digitalWrite(pins[0], LOW);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], HIGH);
@@ -55,6 +62,7 @@ class Movement{
                 digitalWrite(pins[7], LOW);
                 break;
             case FullLeft:
+                Serial.println("FullLeft");
                 digitalWrite(pins[0], HIGH);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], LOW);
@@ -65,6 +73,7 @@ class Movement{
                 digitalWrite(pins[7], LOW);
                 break;
             case FullRight:
+                Serial.println("FullRight");
                 digitalWrite(pins[0], LOW);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], HIGH);
@@ -75,6 +84,7 @@ class Movement{
                 digitalWrite(pins[7], LOW);
                 break;
             case BackRight:
+                Serial.println("BackRight");
                 digitalWrite(pins[0], LOW);
                 digitalWrite(pins[1], LOW);
                 digitalWrite(pins[2], LOW);
@@ -85,6 +95,7 @@ class Movement{
                 digitalWrite(pins[7], HIGH);
                 break;
             case BackLeft:
+                Serial.println("BackLeft");
                 digitalWrite(pins[0], LOW);
                 digitalWrite(pins[1], HIGH);
                 digitalWrite(pins[2], LOW);
@@ -100,23 +111,24 @@ class Movement{
     }
 
     Direction getDirection(char s){
-      if(s == "F"){//FrontR
+      if(s == 'F'){//Front
           return Direction::Front;
-      }else if(s == "B"){//Back
+      }else if(s == 'B'){//Back
           return Direction::Back;
-      }else if(s == "l"){//left
+      }else if(s == 'l'){//left
           return Direction::Left;
-      }else if(s == "r"){//right
+      }else if(s == 'r'){//right
           return Direction::Right;
-      }else if(s == "L"){//FullLeft 
+      }else if(s == 'L'){//FullLeft 
           return Direction::FullLeft;
-      }else if(s ==  "R"){//FullRight
+      }else if(s ==  'R'){//FullRight
           return Direction::FullRight;
-      }else if(s ==  "i"){ //BackLeft
+      }else if(s ==  'i'){ //BackLeft
           return Direction::BackLeft;
-      }else if(s == "d"){//BackRight
+      }else if(s == 'd'){//BackRight
           return Direction::BackRight;
       }
+      return Direction::NONE;
     }
     
     void setSpeed(int speed){
