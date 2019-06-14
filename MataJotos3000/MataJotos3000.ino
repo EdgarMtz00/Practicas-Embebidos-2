@@ -5,6 +5,7 @@ Movement moves;
 BTControl control;
   
 void setup(){
+  Serial.begin(9600);
   moves.entrada();
 }
 

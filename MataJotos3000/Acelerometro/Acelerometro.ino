@@ -19,8 +19,10 @@ String getDirection() {
       Serial.print(i);
       if (az >= 0) {
         lastDir = frontDir[i];
+        return lastDir;
       } else {
         lastDir = backDir[i];
+        return lastDir;
       }
     }
     i++;
@@ -39,5 +41,5 @@ void loop() {
   // put your main code here, to run repeatedly:
   String result = getDirection();
   Serial.println(result);
-  delay(1000);
+  delay(500);
 }
