@@ -4,17 +4,14 @@
   #include "WProgram.h"
 #endif
 #include "Directions.h"
-#include <Servo.h>
 
 
 class Movement{
 
   public: 
-    Servo servo1;
-    Servo servo2;
+    
     Movement(){
-      servo1.attach(A0);
-      servo2.attach(A1);
+     
     }
 
     int pins[8] = {2, 3, 4, 5, 6, 7, 8, 9};

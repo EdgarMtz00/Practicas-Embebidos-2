@@ -16,6 +16,7 @@ class SelfControl{
   SelfControl(){
     pinMode(A5, INPUT);
     pinMode(A4, INPUT);
+    pinMode(A0, INPUT);
   }
   
   NewPing sonar = NewPing(tpin,echo,maxDist);
@@ -33,6 +34,10 @@ class SelfControl{
   
   char run(){
     char res;
+    if(digitalRead(A0)){
+      res = back;
+      speed = 254;
+    }
     if(digitalRead(A5)){
       Serial.println("Negro Atrás");
       contador++;
