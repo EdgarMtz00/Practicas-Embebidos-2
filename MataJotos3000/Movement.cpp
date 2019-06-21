@@ -4,10 +4,19 @@
   #include "WProgram.h"
 #endif
 #include "Directions.h"
-
+#include <Servo.h>
 
 
 class Movement{
+
+  public: 
+    Servo servo1;
+    Servo servo2;
+    Movement(){
+      servo1.attach(A0);
+      servo2.attach(A1);
+    }
+
     int pins[8] = {2, 3, 4, 5, 6, 7, 8, 9};
    /*
     * 2, 3 izquierda delantera
@@ -27,6 +36,7 @@ class Movement{
         switch (dir){
             case Front:
                 Serial.println("Front");
+                Serial.println(speed);
                 for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
                     digitalWrite(pins[i], HIGH);
                     digitalWrite(pins[i+1], LOW);
@@ -105,6 +115,12 @@ class Movement{
                 digitalWrite(pins[6], LOW);
                 digitalWrite(pins[7], LOW);
                 break;
+            case NONE:
+                for(int i = 0; i < sizeof(pins) / sizeof(pins[0]); i+=2){
+                    digitalWrite(pins[i], LOW);
+                    digitalWrite(pins[i+1], LOW);
+                }
+                break;
             default:
                 break;
         }
@@ -131,8 +147,8 @@ class Movement{
       return Direction::NONE;
     }
     
-    void setSpeed(int speed){
-        speed = speed % 255;
+    void setSpeed(int s){
+         speed = s % 255;
         analogWrite(speedPin, speed);
     }
 
@@ -141,14 +157,40 @@ class Movement{
             pinMode(pins[i], OUTPUT);
         }
         Serial.print("entrada");
-        setSpeed(254);
+        setSpeed(115);
+        //madrazos();
+        delay(300);
         move(BackLeft);
         delay(1000);
+        //madrazos();
+        delay(300);
         move(Left);
         delay(1000);
+        //madrazos();
+        delay(300);
         move(BackRight);
         delay(1000);
+        //madrazos();
+        delay(300);
         move(Right);
-        delay(3000);
+        delay(5000);
+    }
+
+    void madrazos(){
+        for(int i = 0; i < 2; i++){
+          delay(250);
+          servo1.write(100);
+          servo2.write(85);
+          delay(250);
+          servo1.write(115);
+          servo2.write(115);
+        }
+        servo1.write(115);
+        servo2.write(95);
+    }
+
+    void modo_diablo(){
+      servo1.write(100);
+      servo2.write(100);
     }
 };
